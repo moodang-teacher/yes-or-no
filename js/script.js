@@ -53,16 +53,10 @@ function vote(type) {
     updateVoteOnFirestore();
 }
 
-function updateVoteOnFirestore() {
-    db.collection('votes')
-        .doc('results')
-        .set(votes)
-        .then(() => {
-            updateVoteCount();
-        })
-        .catch((error) => {
-            console.error('Error updating vote: ', error);
-        });
+async function updateVoteOnFirestore() {
+    const docRef = doc(db, 'votes', 'results'); // 문서 참조 생성
+    await setDoc(docRef, votes); // Firestore에 투표 결과 업데이트
+    updateVoteCount();
 }
 
 function updateVoteCount() {
