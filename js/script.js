@@ -3,12 +3,12 @@ import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/fireb
 
 // Firebase 초기화
 const firebaseConfig = {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    appId: 'YOUR_APP_ID',
+    apiKey: 'AIzaSyBumMEQkqGB3bQbnzGN4q1XghrWQTkJpOA',
+    authDomain: 'yes-or-no-83b4d.firebaseapp.com',
+    projectId: 'yes-or-no-83b4d',
+    storageBucket: 'yes-or-no-83b4d.firebasestorage.app',
+    messagingSenderId: '161352961851',
+    appId: '1:161352961851:web:a260c33da1e6fe0972b11e',
 };
 
 // Firebase 초기화
@@ -25,22 +25,17 @@ window.onload = function () {
     fetchVoteResults();
 };
 
-function fetchVoteResults() {
-    db.collection('votes')
-        .doc('results')
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                votes = doc.data();
-                totalVotes = votes.agree + votes.disagree;
-                updateVoteCount();
-            } else {
-                console.log('No such document!');
-            }
-        })
-        .catch((error) => {
-            console.error('Error fetching vote results: ', error);
-        });
+async function fetchVoteResults() {
+    const docRef = doc(db, 'votes', 'results'); // 문서 참조 생성
+    const docSnap = await getDoc(docRef); // 문서 가져오기
+
+    if (docSnap.exists()) {
+        votes = docSnap.data();
+        totalVotes = votes.agree + votes.disagree;
+        updateVoteCount();
+    } else {
+        console.log('No such document!');
+    }
 }
 
 function vote(type) {
