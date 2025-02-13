@@ -165,3 +165,32 @@ function createConfetti() {
 		}, duration * 1000);
 	}
 }
+
+const buttons = document.querySelectorAll('.btns button');
+
+buttons.forEach((button) => {
+	button.addEventListener('mousedown', () => {
+		button.classList.add('active');
+	});
+
+	button.addEventListener('mouseup', () => {
+		button.classList.remove('active');
+	});
+
+	button.addEventListener('mouseleave', () => {
+		button.classList.remove('active');
+	});
+
+	// 터치 이벤트 추가
+	button.addEventListener('touchstart', () => {
+		button.classList.add('active');
+	});
+
+	button.addEventListener('touchend', () => {
+		button.classList.remove('active');
+	});
+
+	button.addEventListener('touchcancel', () => {
+		button.classList.remove('active');
+	});
+});

@@ -22,6 +22,12 @@ button {
 	font-weight: 700;
 	box-shadow: 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000;
 	color: #000;
+	transition: transform 0.1s ease;
+}
+
+.btns button:active {
+	transform: scale(0.95);
+	box-shadow: 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000;
 }
 
 body {
