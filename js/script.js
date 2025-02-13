@@ -38,7 +38,8 @@ async function fetchVoteResults() {
     }
 }
 
-function vote(type) {
+// vote 함수를 전역으로 노출
+window.vote = function (type) {
     // 중복 투표 방지 로직
     if (userVote) {
         alert('이미 투표하셨습니다.');
@@ -51,7 +52,7 @@ function vote(type) {
 
     // Firestore에 투표 결과 업데이트
     updateVoteOnFirestore();
-}
+};
 
 async function updateVoteOnFirestore() {
     const docRef = doc(db, 'votes', 'results'); // 문서 참조 생성
