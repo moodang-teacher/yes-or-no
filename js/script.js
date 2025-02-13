@@ -35,8 +35,9 @@ function fetchVoteResults() {
 	const docRef = doc(db, 'votes', 'results'); // 문서 참조 생성
 
 	// 실시간 리스너 추가
-	onSnapshot(docRef, (docSnap) => {
-		try {
+	onSnapshot(
+		docRef,
+		(docSnap) => {
 			if (docSnap.exists()) {
 				votes = docSnap.data();
 				totalVotes = votes.agree + votes.disagree;
@@ -44,10 +45,11 @@ function fetchVoteResults() {
 			} else {
 				console.log('No such document!');
 			}
-		} catch (error) {
-			console.error('Error fetching vote results: ', error);
+		},
+		(error) => {
+			console.error('Error in onSnapshot: ', error);
 		}
-	});
+	);
 }
 
 // vote 함수를 전역으로 노출
@@ -77,10 +79,19 @@ async function updateVoteOnFirestore() {
 }
 
 function updateVoteCount() {
-	document.getElementById('count').innerText = totalVotes; // 총 투표 수 업데이트
-	document.getElementById(
-		'result-count'
-	).innerText = `👍 ${votes.agree}명 vs 👎 ${votes.disagree}명`; // 결과 업데이트
+	const countElement = document.getElementById('count');
+	const resultCountElement = document.getElementById('result-count');
+
+	// DOM 업데이트 최적화
+	if (countElement.innerText !== totalVotes.toString()) {
+		countElement.innerText = totalVotes; // 총 투표 수 업데이트
+	}
+	if (
+		resultCountElement.innerText !==
+		`👍 ${votes.agree}명 vs 👎 ${votes.disagree}명`
+	) {
+		resultCountElement.innerText = `👍 ${votes.agree}명 vs 👎 ${votes.disagree}명`; // 결과 업데이트
+	}
 }
 
 // showResult 함수를 전역으로 노출
