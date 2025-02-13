@@ -4,6 +4,7 @@ import {
 	doc,
 	getDoc,
 	setDoc,
+	onSnapshot,
 } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
 // Firebase 초기화
@@ -30,17 +31,19 @@ window.onload = function () {
 	fetchVoteResults();
 };
 
-async function fetchVoteResults() {
+function fetchVoteResults() {
 	const docRef = doc(db, 'votes', 'results'); // 문서 참조 생성
-	const docSnap = await getDoc(docRef); // 문서 가져오기
 
-	if (docSnap.exists()) {
-		votes = docSnap.data();
-		totalVotes = votes.agree + votes.disagree;
-		updateVoteCount();
-	} else {
-		console.log('No such document!');
-	}
+	// 실시간 리스너 추가
+	onSnapshot(docRef, (docSnap) => {
+		if (docSnap.exists()) {
+			votes = docSnap.data();
+			totalVotes = votes.agree + votes.disagree;
+			updateVoteCount();
+		} else {
+			console.log('No such document!');
+		}
+	});
 }
 
 // vote 함수를 전역으로 노출
