@@ -36,12 +36,16 @@ function fetchVoteResults() {
 
 	// 실시간 리스너 추가
 	onSnapshot(docRef, (docSnap) => {
-		if (docSnap.exists()) {
-			votes = docSnap.data();
-			totalVotes = votes.agree + votes.disagree;
-			updateVoteCount();
-		} else {
-			console.log('No such document!');
+		try {
+			if (docSnap.exists()) {
+				votes = docSnap.data();
+				totalVotes = votes.agree + votes.disagree;
+				updateVoteCount();
+			} else {
+				console.log('No such document!');
+			}
+		} catch (error) {
+			console.error('Error fetching vote results: ', error);
 		}
 	});
 }
@@ -64,8 +68,12 @@ window.vote = function (type) {
 
 async function updateVoteOnFirestore() {
 	const docRef = doc(db, 'votes', 'results'); // 문서 참조 생성
-	await setDoc(docRef, votes); // Firestore에 투표 결과 업데이트
-	updateVoteCount();
+	try {
+		await setDoc(docRef, votes); // Firestore에 투표 결과 업데이트
+		updateVoteCount();
+	} catch (error) {
+		console.error('Error updating vote on Firestore: ', error);
+	}
 }
 
 function updateVoteCount() {
