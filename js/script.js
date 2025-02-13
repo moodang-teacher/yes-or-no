@@ -1,23 +1,78 @@
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+// Firebase 초기화
+const firebaseConfig = {
+    apiKey: 'YOUR_API_KEY',
+    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
+    projectId: 'YOUR_PROJECT_ID',
+    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    appId: 'YOUR_APP_ID',
+};
+
+// Firebase 초기화
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 let votes = { agree: 0, disagree: 0 };
 let totalVotes = 0;
-let userVotes = new Set();
+let userVote = null; // 사용자의 투표 저장
 let overlay = document.getElementById('overlay');
 
+// 페이지 로드 시 투표 결과 가져오기
+window.onload = function () {
+    fetchVoteResults();
+};
+
+function fetchVoteResults() {
+    db.collection('votes')
+        .doc('results')
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+                votes = doc.data();
+                totalVotes = votes.agree + votes.disagree;
+                updateVoteCount();
+            } else {
+                console.log('No such document!');
+            }
+        })
+        .catch((error) => {
+            console.error('Error fetching vote results: ', error);
+        });
+}
+
 function vote(type) {
-    if (userVotes.size > 0) {
+    // 중복 투표 방지 로직
+    if (userVote) {
         alert('이미 투표하셨습니다.');
         return;
     }
 
-    userVotes.add(type);
+    userVote = type; // 사용자의 투표 저장
     votes[type]++;
     totalVotes++;
-    updateVoteCount();
+
+    // Firestore에 투표 결과 업데이트
+    updateVoteOnFirestore();
+}
+
+function updateVoteOnFirestore() {
+    db.collection('votes')
+        .doc('results')
+        .set(votes)
+        .then(() => {
+            updateVoteCount();
+        })
+        .catch((error) => {
+            console.error('Error updating vote: ', error);
+        });
 }
 
 function updateVoteCount() {
-    document.getElementById('count').innerText = totalVotes;
-    document.getElementById('result-count').innerText = `👍 ${votes.agree}명 vs 👎 ${votes.disagree}명`;
+    document.getElementById('count').innerText = totalVotes; // 총 투표 수 업데이트
+    document.getElementById('result-count').innerText = `👍 ${votes.agree}명 vs 👎 ${votes.disagree}명`; // 결과 업데이트
 }
 
 function showResult() {
@@ -32,6 +87,7 @@ function showResult() {
     document.getElementById('result-message').innerText = message;
     createConfetti();
 
+    // 결과를 보여줄 때도 투표 수 업데이트
     updateVoteCount();
 
     setTimeout(() => {
