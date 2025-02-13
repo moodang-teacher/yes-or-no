@@ -12,7 +12,12 @@ function vote(type) {
     userVotes.add(type);
     votes[type]++;
     totalVotes++;
+    updateVoteCount();
+}
+
+function updateVoteCount() {
     document.getElementById('count').innerText = totalVotes;
+    document.getElementById('result-count').innerText = `👍 ${votes.agree}명 vs 👎 ${votes.disagree}명`;
 }
 
 function showResult() {
@@ -25,8 +30,9 @@ function showResult() {
         message = '재투표합니다!';
     }
     document.getElementById('result-message').innerText = message;
-    document.getElementById('result-count').innerText = `👍 ${votes.agree}명 vs 👎 ${votes.disagree}명`;
     createConfetti();
+
+    updateVoteCount();
 
     setTimeout(() => {
         overlay.classList.add('show');
