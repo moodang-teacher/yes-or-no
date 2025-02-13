@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>YES or NO</title>
+        <link rel="stylesheet" href="./css/style.css" />
+        <script src="./js/script.js" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>YES or NO</h1>
+            <p>현재까지 <span id="count">0</span>명이 참여했습니다!</p>
+            <div class="btns">
+                <button onclick="vote('agree')">👍</button>
+                <button onclick="vote('disagree')">👎</button>
+            </div>
+            <button class="btn-result" onclick="showResult()">결과 보기</button>
+        </div>
+
+        <div class="overlay" id="overlay">
+            <div class="overlay-content">
+                <h2 id="result-message"></h2>
+                <p id="result-count"></p>
+                <button onclick="closeOverlay()">닫기</button>
+            </div>
+        </div>
+    </body>
+</html>
